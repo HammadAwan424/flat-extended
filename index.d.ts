@@ -2,6 +2,7 @@ export interface FlattenOptions {
   delimiter?: string;
   maxDepth?: number;
   safe?: boolean;
+  except?: (key: string, value: any) => boolean;
   transformKey?: (key: string) => string;
 }
 

@@ -9,6 +9,42 @@ delimited keys.
 $ npm install flat
 ```
 
+## Extension
+### flatten(original, options)
+
+options passed to flatten now receives optionally another arguement  called `except`. Typings are `except?: (key: string, value: any) => boolean;`. The `key` is nested key and `value` is corresponding value. If the return value is true, then the whole value is copied using `=` opeartor (i.e. this will copy objects as reference).
+
+```javascript
+const obj = {
+    hello: {
+        lorem: {
+            ipsum: "again",
+            dolor: "sit",
+        },
+    },
+    world: {
+        lorem: {
+            ipsum: "again",
+            dolor: "sit",
+        },
+    },
+};
+
+const exceptFunc = (key, value) => {
+    if (key == "hello.lorem") {
+        return true
+    }
+}
+
+flatten(obj, { except: exceptFunc });
+
+// {
+//   'hello.lorem': { ipsum: 'again', dolor: 'sit' },
+//   'world.lorem.ipsum': 'again',
+//   'world.lorem.dolor': 'sit'
+// }
+```
+
 ## Methods
 
 ### flatten(original, options)

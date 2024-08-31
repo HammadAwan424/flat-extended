@@ -8,6 +8,9 @@ function isBuffer (obj) {
 function keyIdentity (key) {
   return key
 }
+function dontSkip (key, value) {
+  return false
+}
 
 export function flatten (target, opts) {
   opts = opts || {}
@@ -15,6 +18,7 @@ export function flatten (target, opts) {
   const delimiter = opts.delimiter || '.'
   const maxDepth = opts.maxDepth
   const transformKey = opts.transformKey || keyIdentity
+  const exceptFunc = opts.except || dontSkip
   const output = {}
 
   function step (object, prev, currentDepth) {
@@ -32,9 +36,11 @@ export function flatten (target, opts) {
       const newKey = prev
         ? prev + delimiter + transformKey(key)
         : transformKey(key)
+      
+      const shouldSkip = exceptFunc(newKey, value)
 
       if (!isarray && !isbuffer && isobject && Object.keys(value).length &&
-        (!opts.maxDepth || currentDepth < maxDepth)) {
+        (!opts.maxDepth || currentDepth < maxDepth) && !shouldSkip) {
         return step(value, newKey, currentDepth + 1)
       }
 
